@@ -1,0 +1,36 @@
+---
+title: "Tarea R1"
+author: "Cerda Jean Pierre"
+date: "2023-02-22"
+output: html_document
+---
+```{r}
+library(ggplot2)
+library(ggpubr)
+library(ggpmisc)
+library(dplyr)
+library(tidyverse)
+library(scales)
+```
+```{r}
+data(who)
+
+df <- who %>% 
+  filter(year >= 1996, year <= 2012) %>%
+  ggplot(aes(x = new_sp_f014, y = new_sp_m014, color = factor(year))) +
+  geom_point(size = 0.4) +
+  geom_jitter(size = 0.5, alpha = 0.2, na.rm = TRUE) +
+  labs(x = "Casos positivos de niñas entre 0-14 años",
+       y = "Casos positivos de niños entre 0-14 años") +
+  scale_x_log10() +
+  scale_y_log10() +
+  geom_smooth(method = "lm", se = FALSE, formula = y ~ x) +
+  stat_poly_eq(formula = y ~ x, aes(label = paste(stat(eq.label), stat(adj.rr.label), sep = "*\", \"*")), 
+               parse = TRUE, size = 3, label.x.npc = 0.15, label.y.npc = 0.85, 
+               coef.digits = 2) +
+  facet_wrap(. ~ year) +
+  theme_classic() +
+  theme(legend.position = "none")
+df
+```
+
